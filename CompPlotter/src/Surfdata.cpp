@@ -9,6 +9,7 @@ std::ostream& operator<<(std::ostream& os, const SurfacePoint& sp)
 
 Surfdata::Surfdata(std::string filePath)
 {
+    // Collect and sort data from file
     auto data = extractDataFromFile(filePath);
     for (size_t i = 0; i < data.size(); i++)
     {
