@@ -64,13 +64,7 @@ struct SurfacePoint{
 
 };
 
-std::ostream& operator<<(std::ostream& os, const SurfacePoint& sp)
-{
-    os << "\t";
-	std::copy(sp.data.begin(), sp.data.end(), std::ostream_iterator<double>(os, "\t"));
-	os << "\t";
-    return os;
-}
+std::ostream& operator<<(std::ostream& os, const SurfacePoint& sp);
 
 class Surfdata
 {
