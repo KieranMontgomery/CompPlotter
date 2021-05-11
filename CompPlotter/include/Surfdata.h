@@ -3,6 +3,9 @@
 #include <vector>
 #include <iterator>
 
+#include <iostream>
+#include <vector>
+
 struct SurfacePoint{
 	double ie;
 	double xc;
@@ -30,9 +33,7 @@ struct SurfacePoint{
 	double dT;
 	double dnvki;
 
-	std::vector<double> data;
-
-	SurfacePoint(std::vector<double> input){
+	SurfacePoint(const double* input){
 		ie = input[0];
 		xc = input[1];
 		yc = input[2];
@@ -58,14 +59,12 @@ struct SurfacePoint{
 		dp = input[22];
 		dT = input[23];
 		dnvki = input[24];
-
-		data = input;
 	}
 
 };
 
 std::ostream& operator<<(std::ostream& os, const SurfacePoint& sp);
-
+std::vector<SurfacePoint> extractDataFromFile(std::string& filename);
 class Surfdata
 {
 public:

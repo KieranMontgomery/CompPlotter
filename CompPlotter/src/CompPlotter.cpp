@@ -4,10 +4,12 @@
 #include <vector>
 
 #include <chrono>
+#include <thread>
+#include <utility>
 
 #include "../include/Surfdata.h"
 
-#define ITER_BENCH 100
+#define ITER_BENCH 5
 
 
 struct Stats {
@@ -62,16 +64,31 @@ void showStats(const Stats& s) {
 
 int main()
 {
-    std::string filepath = "data/forces820000.dat";
+    std::vector<std::string> test {
+        "data/test0.dat", "data/test1.dat", "data/test2.dat","data/test3.dat","data/test4.dat", "data/test5.dat",
+        "data/test6.dat", "data/test7.dat", "data/test8.dat","data/test9.dat","data/test10.dat", "data/test11.dat",
+    };
 
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
     std::vector<std::chrono::nanoseconds> runs;
+    const auto& iter = [&test](int ix, std::chrono::nanoseconds& out) {
+        std::chrono::steady_clock::time_point beginRun = std::chrono::steady_clock::now();
+        Surfdata s(test[ix]); /* code */
+        std::chrono::steady_clock::time_point endRun = std::chrono::steady_clock::now();
+        out = endRun - beginRun;
+    };
+
     for (size_t i = 0; i < ITER_BENCH; i++)
     {
-        std::chrono::steady_clock::time_point beginRun = std::chrono::steady_clock::now();
-        Surfdata s(filepath); /* code */
-        std::chrono::steady_clock::time_point endRun = std::chrono::steady_clock::now();
-        runs.push_back(endRun - beginRun);
+        std::thread th[12];
+        std::chrono::nanoseconds times[12];
+        for (int thIx = 0; thIx < 12; thIx++) {
+            th[thIx] = std::thread(iter, thIx, std::ref(times[thIx]));
+        }
+        for (int thIx = 0; thIx < 12; thIx++) {
+            th[thIx].join();
+            runs.push_back(times[thIx]);
+        }
     }
     
     showStats(calculate(runs));
