@@ -4,13 +4,14 @@
 #include <vector>
 
 #include <chrono>
+
 #include <thread>
+
 #include <utility>
 
-#include "../include/Surfdata.h"
+#include "Surfdata.h"
 
 #define ITER_BENCH 5
-
 
 struct Stats {
     double meanMs;
@@ -65,8 +66,27 @@ void showStats(const Stats& s) {
 int main()
 {
     std::vector<std::string> test {
-        "data/test0.dat", "data/test1.dat", "data/test2.dat","data/test3.dat","data/test4.dat", "data/test5.dat",
-        "data/test6.dat", "data/test7.dat", "data/test8.dat","data/test9.dat","data/test10.dat", "data/test11.dat",
+"data/test0.dat",
+"data/test1.dat",
+"data/test2.dat",
+"data/test3.dat",
+"data/test4.dat",
+"data/test5.dat",
+"data/test6.dat",
+"data/test7.dat",
+"data/test8.dat",
+"data/test9.dat",
+"data/test10.dat",
+"data/test11.dat",
+"data/test12.dat",
+"data/test13.dat",
+"data/test14.dat",
+"data/test15.dat",
+"data/test16.dat",
+"data/test17.dat",
+"data/test18.dat",
+"data/test19.dat",
+"data/test20.dat",
     };
 
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
