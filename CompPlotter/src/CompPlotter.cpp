@@ -65,10 +65,10 @@ void showStats(const Stats& s) {
 struct CoefficientData{
     unsigned int timestep;
     double CD;
-    double CTThroat;
     double CTExit;
+    double CTThroat;
 
-    CoefficientData(const int& step, const double& CD) : timestep(step), CD(CD) {};
+    CoefficientData(int step, double CD) : timestep(step), CD(CD) {};
 };
 
 void ParseDataAndOutput(const std::string& directoryPath, const bool& hasJet){
@@ -89,41 +89,36 @@ void ParseDataAndOutput(const std::string& directoryPath, const bool& hasJet){
     #endif
     // Sort data from .dat files
     std::vector<CoefficientData> data;
+    data.reserve(files.size());
     for (size_t i = 0; i < files.size(); i++)
     {
-        try{
-            // Create temporary surfdata object
-            Surfdata temp(files[i], hasJet);
+        // Create temporary surfdata object
+        Surfdata temp(files[i], hasJet);
 
-            // Find timestep from file name
-            std::string stepAsString = files[i].substr(files[i].find(".dat") - 6, 6);
-            size_t stepIndex = 0;
-            for ( ; stepIndex < stepAsString.length(); stepIndex++ ){ if ( isdigit(stepAsString[stepIndex]) ) break; }
-            stepAsString = stepAsString.substr(stepIndex, stepAsString.length() - stepIndex );
-            int step = atoi(stepAsString.c_str());
+        // Find timestep from file name
+        std::string stepAsString = files[i].substr(files[i].find(".dat") - 6, 6);
+        size_t stepIndex = 0;
+        for ( ; stepIndex < stepAsString.length(); stepIndex++ ){ if ( isdigit(stepAsString[stepIndex]) ) break; }
+        stepAsString = stepAsString.substr(stepIndex, stepAsString.length() - stepIndex );
+        int step = atoi(stepAsString.c_str());
 
-            // Add data to 
-            data.push_back(CoefficientData(step, temp.CD));
+        // Add data to 
+        data.push_back(CoefficientData(step, temp.CD));
+    }
 
-        }
-        catch (const std::exception& e){
-            std::cout << "Failed on step " << i << std::endl;
-            std::cout << e.what();
+    if (hasJet){
+        #if debug
+        std::cout << "Looking in screen file for CT values" << std::endl;
+        #endif
+        // Find corresponding thrust values
+        for (size_t i = 0; i < data.size(); i++)
+        {
+            CoefficientData temp = data[i];
+            
+            // TODO Find corresponding CT values
         }
     }
 
-    if (!hasJet) return; // If there is no jet, don't look for thrust coefficient values
-
-    #if debug
-    std::cout << "Looking in screen file for CT values" << std::endl;
-    #endif
-    // Find corresponding thrust values
-    for (size_t i = 0; i < data.size(); i++)
-    {
-        CoefficientData temp = data[i];
-        
-        // TODO Find corresponding CT values
-    }
 
     #if debug
     std::cout << "Writing data to file" << std::endl;
