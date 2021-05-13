@@ -13,6 +13,12 @@
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
+## My ignores
+*.dat
+*.json
+*.exe
+*.out
+
 # Mono auto generated files
 mono_crash.*
 

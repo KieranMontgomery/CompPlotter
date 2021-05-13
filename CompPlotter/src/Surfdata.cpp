@@ -11,7 +11,7 @@
 
 std::vector<SurfacePoint> extractDataFromFile(const std::string& filename) 
 {
-    #if debug 
+    #if debug==2 
     std::cout << "Extracting data from " << filename << std::endl;
     #endif
     std::ifstream file(filename);
@@ -93,7 +93,7 @@ void Surfdata::CalculateCD()
 
     CD /= (0.509537 * 0.509537 * 0.25);
 
-    #if debug 
+    #if debug==2
     std::cout << "CD = " << CD << std::endl;
     #endif
 }
