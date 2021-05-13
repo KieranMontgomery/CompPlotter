@@ -68,18 +68,20 @@ int main()
 
     std::string path = "F:/Users/kmont/Documents/LongJet/noJet/dirforces"; // Not NVME drive, will move data when we do performance analysis
     for (const auto & entry : std::filesystem::directory_iterator(path)) // Get all files names in directory.
-        files.push_back(entry.path().string());
+    {
+        std::string file = entry.path().string();
+        
+        if (file.find(".dat") != std::string::npos) files.push_back(file);
+
+    }
 
     std::vector<Surfdata> data;
-
     double average = 0;
     for (size_t i = 0; i < files.size(); i++)
     {
-        data.push_back(files[i]);
+        data.push_back(Surfdata(files[i], false));
         average += data[i].CD;
     }
     average /= files.size();
-
-    std::cout << "Average CD is " << average << std::endl;
-    
+    std::cout << "Average CD is " << average << std::endl;   
 }

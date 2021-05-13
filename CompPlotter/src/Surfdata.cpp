@@ -91,7 +91,7 @@ void Surfdata::CalculateCD()
         CD += Cp * nx * ds * yc * 2.0;
     }
 
-    CD /= 0.509537 * 0.509537 * 0.25 * M_PI;
+    CD /= (0.509537 * 0.509537 * 0.25);
 
     #if debug 
     std::cout << "CD = " << CD << std::endl;

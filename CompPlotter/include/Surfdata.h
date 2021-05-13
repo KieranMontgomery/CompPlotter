@@ -72,7 +72,7 @@ public:
 
 	// Functions	
 	Surfdata() {};
-	Surfdata(const std::string& filePath, const bool& hasJet = false);
+	Surfdata(const std::string& filePath, const bool& hasJet = true);
 	std::vector<SurfacePoint> points;
 
 
