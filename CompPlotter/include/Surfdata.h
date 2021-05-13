@@ -63,14 +63,25 @@ struct SurfacePoint{
 
 };
 
-std::ostream& operator<<(std::ostream& os, const SurfacePoint& sp);
-std::vector<SurfacePoint> extractDataFromFile(std::string& filename);
+std::vector<SurfacePoint> extractDataFromFile(const std::string& filename);
 class Surfdata
 {
 public:
+	// Variables
+	double CD = 0.0;
+
+	// Functions	
 	Surfdata() {};
-	Surfdata(std::string filePath);
+	Surfdata(const std::string& filePath, const bool& hasJet = false);
 	std::vector<SurfacePoint> points;
+
+
+private:
+	// Variables
+	bool m_hasJet;
+
+	// Functions
+	void CalculateCD();
 
 };
 

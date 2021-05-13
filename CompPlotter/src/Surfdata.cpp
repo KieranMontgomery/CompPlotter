@@ -4,10 +4,16 @@
 #include <fstream>
 #include <string>
 
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 // #define OLD_PATH
 
-std::vector<SurfacePoint> extractDataFromFile(std::string& filename) 
+std::vector<SurfacePoint> extractDataFromFile(const std::string& filename) 
 {
+    #if debug 
+    std::cout << "Extracting data from " << filename << std::endl;
+    #endif
     std::ifstream file(filename);
     if (!file.is_open()){
         std::cout << "Unable to open file" << std::endl; 
@@ -59,15 +65,35 @@ std::vector<SurfacePoint> extractDataFromFile(std::string& filename)
     return output;
 }
 
-
-std::ostream& operator<<(std::ostream& os, const SurfacePoint& sp)
-{
-	// std::copy(sp.data.begin(), sp.data.end(), std::ostream_iterator<double>(os, "\t"));
-    return os;
-}
-
-Surfdata::Surfdata(std::string filePath)
+Surfdata::Surfdata(const std::string& filePath, const bool& hasJet) : m_hasJet(hasJet)
 {
     // Collect and sort data from file
     points = std::move(extractDataFromFile(filePath));
+
+    // Calculate values
+    CalculateCD();
+}
+
+void Surfdata::CalculateCD() 
+{
+    for (size_t i = 0; i < points.size(); i++)
+    {
+        double nx = points[i].nx;
+        double xc = points[i].xc;
+        double yc = points[i].yc;
+        double ds = points[i].ds;
+        double Cp = points[i].Cp;
+
+        if (m_hasJet && yc < 0.02 && xc < 1.4){
+            continue;
+        }
+
+        CD += Cp * nx * ds * yc * 2.0;
+    }
+
+    CD /= 0.509537 * 0.509537 * 0.25 * M_PI;
+
+    #if debug 
+    std::cout << "CD = " << CD << std::endl;
+    #endif
 }

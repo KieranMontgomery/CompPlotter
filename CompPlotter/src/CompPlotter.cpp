@@ -2,12 +2,10 @@
 #include <cmath>
 #include <iostream>
 #include <vector>
-
 #include <chrono>
-
 #include <thread>
-
 #include <utility>
+#include <filesystem>
 
 #include "Surfdata.h"
 
@@ -65,63 +63,23 @@ void showStats(const Stats& s) {
 
 int main()
 {
-    std::vector<std::string> test {
-"data/test0.dat",
-"data/test1.dat",
-"data/test2.dat",
-"data/test3.dat",
-"data/test4.dat",
-"data/test5.dat",
-"data/test6.dat",
-"data/test7.dat",
-"data/test8.dat",
-"data/test9.dat",
-"data/test10.dat",
-"data/test11.dat",
-"data/test12.dat",
-"data/test13.dat",
-"data/test14.dat",
-"data/test15.dat",
-"data/test16.dat",
-"data/test17.dat",
-"data/test18.dat",
-"data/test19.dat",
-"data/test20.dat",
-    };
 
-    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-    std::vector<std::chrono::nanoseconds> runs;
-    const auto& iter = [&test](int ix, std::chrono::nanoseconds& out) {
-        std::chrono::steady_clock::time_point beginRun = std::chrono::steady_clock::now();
-        Surfdata s(test[ix]); /* code */
-        std::chrono::steady_clock::time_point endRun = std::chrono::steady_clock::now();
-        out = endRun - beginRun;
-    };
+    std::vector<std::string> files;
 
-    for (size_t i = 0; i < ITER_BENCH; i++)
+    std::string path = "F:/Users/kmont/Documents/LongJet/noJet/dirforces"; // Not NVME drive, will move data when we do performance analysis
+    for (const auto & entry : std::filesystem::directory_iterator(path)) // Get all files names in directory.
+        files.push_back(entry.path().string());
+
+    std::vector<Surfdata> data;
+
+    double average = 0;
+    for (size_t i = 0; i < files.size(); i++)
     {
-        std::thread th[12];
-        std::chrono::nanoseconds times[12];
-        for (int thIx = 0; thIx < 12; thIx++) {
-            th[thIx] = std::thread(iter, thIx, std::ref(times[thIx]));
-        }
-        for (int thIx = 0; thIx < 12; thIx++) {
-            th[thIx].join();
-            runs.push_back(times[thIx]);
-        }
+        data.push_back(files[i]);
+        average += data[i].CD;
     }
+    average /= files.size();
+
+    std::cout << "Average CD is " << average << std::endl;
     
-    showStats(calculate(runs));
-    //std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-    // std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()/ITER_BENCH << "[µs]" << std::endl;
-/*
-    filepath = "D:/Users/kmont/Documents/LongJet/forces820000.dat";
-    begin = std::chrono::steady_clock::now();
-    for (size_t i = 0; i < ITER_BENCH; i++)
-    {
-        Surfdata s(filepath);
-    }
-    end = std::chrono::steady_clock::now();
-    std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()/ITER_BENCH << "[µs]" << std::endl; 
-*/
 }
