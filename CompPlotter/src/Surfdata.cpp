@@ -1,5 +1,4 @@
 #include "../include/Surfdata.h"
-#include "../include/DataReader.h"
 
 #include <fstream>
 #include <string>

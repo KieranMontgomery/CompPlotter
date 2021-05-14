@@ -18,6 +18,7 @@
 *.json
 *.exe
 *.out
+*.txt
 
 # Mono auto generated files
 mono_crash.*
