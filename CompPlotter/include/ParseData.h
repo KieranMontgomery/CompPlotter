@@ -13,7 +13,7 @@ struct CoefficientData{
     double CTExit;
     double CTThroat;
 
-    CoefficientData(){}; // TODO Why do we need a default constructor? Can we remove?
+    CoefficientData(){std::cout << "Copied\n"; }; // TODO Why do we need a default constructor? Can we remove? Does not compile without, probably to do with map.
     CoefficientData(double CD) : CD(CD) {};
 };
 

@@ -28,8 +28,6 @@ void ParseData::fillData()
     std::cout << "[fillData] Sorting data from .dat files" << std::endl;
     #endif
     // Sort data from .dat files
-    //m_data.reserve(m_files.size()); 
-    // TODO Can we reserve space for map to improve?
     for (size_t i = 0; i < m_files.size(); i++)
     {
         // Create temporary surfdata object
@@ -43,8 +41,7 @@ void ParseData::fillData()
         int step = atoi(stepAsString.c_str());
 
         // Add data to 
-        CoefficientData s(temp.CD);
-        m_data[step] = s;
+        m_data.emplace(step, CoefficientData(temp.CD)); 
     }
 
     #if debug
