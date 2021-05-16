@@ -65,7 +65,15 @@ void showStats(const Stats& s) {
 // COMPILE SCRIPT - clang++ -std=c++17 -o a.exe -I include src/*.cpp -O3 -target x86_64-pc-windows-msvc 
 int main()
 {
-    ParseData("F:/Users/kmont/Documents/LongJet/testJet/dirforces", true);
+
+    std::string path;
+#ifdef __linux__
+    path = "/home/kieranunix/dirforces";
+#else
+    path = "F:/Users/kmont/Documents/LongJet/testJet/dirforces";
+#endif
+
+    ParseData(path, true);
 
     std::cout << "Finished" << std::endl;
 }

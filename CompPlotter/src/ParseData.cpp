@@ -60,12 +60,6 @@ void ParseData::fillJetData()
         std::cout << "Unable to open file" << std::endl; throw;
     }
 
-    std::vector<int> timeSteps;
-    timeSteps.reserve(m_data.size());
-    // Fill vector with found time-steps
-    for (const auto& [key, value] : m_data){
-        timeSteps.push_back(key);
-    }
 
     std::string line;
     double CT;
@@ -77,6 +71,16 @@ void ParseData::fillJetData()
             for ( ; stepIndex < line.length(); stepIndex++ ){ if ( isdigit(line[stepIndex]) ) break; }
             line = line.substr(stepIndex, line.length() - stepIndex );
             step = std::atoi(line.c_str());
+           
+            //m_data[step].CTExit = CT;
+        
+            auto search = m_data.find(step);
+            if (search != m_data.end()) {
+                // std::cout << "Step: " << step << " CT: " << CT << std::endl;
+                search->second.CTExit = CT;
+                // std::cout << "Found " << search->first << '\n';
+            }
+        
         }
         else if (line.find("CT") != std::string::npos){
             size_t stepIndex = 0;
@@ -84,15 +88,7 @@ void ParseData::fillJetData()
             line = line.substr(stepIndex, line.length() - stepIndex );
             CT = std::atof(line.c_str());
         }
-
-        std::vector<int>::iterator index = std::find(timeSteps.begin(), timeSteps.end(), step);
-        if (index != timeSteps.end()){
-            timeSteps.erase(index); // Remove from timesteps
-            m_data[step].CTExit = CT;
-        }
-
     }
-
 
     file.close();
     #if debug

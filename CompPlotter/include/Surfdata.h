@@ -35,14 +35,14 @@ struct SurfacePoint{
 
 	SurfacePoint(const double* input){
 		ie = input[0];
-		xc = input[1];
-		yc = input[2];
-		nx = input[3];
+		xc = input[1]; //
+		yc = input[2]; //
+		nx = input[3]; //
 		ny = input[4];
 		s1 = input[5];
-		ds = input[6];
+		ds = input[6]; //
 		angle = input[7];
-		Cp = input[8];
+		Cp = input[8]; //
 		Cf = input[9];
 		qw = input[10];
 		rho = input[11];

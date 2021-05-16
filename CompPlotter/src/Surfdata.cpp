@@ -41,7 +41,11 @@ std::vector<SurfacePoint> extractDataFromFile(const std::string& filename)
         int stIx = ix;
         while (ix < line.size()) {
             if (line[ix] == ' ') {
-                double result = std::stod(line.substr(stIx, ix-stIx));
+                // TODO: test this code lol
+                double result = 0;
+                if (v_len == 1 || v_len == 2 || v_len == 3 || v_len == 6 || v_len == 8) {
+                    result = std::stod(line.substr(stIx, ix-stIx));
+                } // 1 2 3 6 8
                 v[v_len] = result;
                 v_len++;
                 while (ix < line.size() && line[ix] == ' ') {
