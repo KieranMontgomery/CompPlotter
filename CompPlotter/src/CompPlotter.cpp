@@ -61,7 +61,6 @@ void showStats(const Stats& s) {
     std::cout << "Minimum/Maximum: " << s.minMs << "ms" << " / " << s.maxMs << "ms" << std::endl;
 } 
 
-
 // COMPILE SCRIPT - clang++ -std=c++17 -o a.exe -I include src/*.cpp -O3 -target x86_64-pc-windows-msvc 
 int main()
 {
@@ -73,7 +72,7 @@ int main()
     path = "F:/Users/kmont/Documents/LongJet/testJet/dirforces";
 #endif
 
-    ParseData(path, true);
+    ParseData(path, true, 12);
 
     std::cout << "Finished" << std::endl;
 }

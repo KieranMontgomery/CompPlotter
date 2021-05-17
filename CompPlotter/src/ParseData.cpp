@@ -1,6 +1,6 @@
 #include "ParseData.h"
 
-ParseData::ParseData(const std::string& dirPath, bool hasJet)  : m_dirPath(dirPath), m_hasJet(hasJet)
+ParseData::ParseData(const std::string& dirPath, bool hasJet, int numThreads)  : m_dirPath(dirPath), m_hasJet(hasJet), m_numThreads(numThreads)
 {
     getFilesInDir();
     fillData();
@@ -27,8 +27,25 @@ void ParseData::fillData()
     #if debug
     std::cout << "[fillData] Sorting data from .dat files" << std::endl;
     #endif
+
     // Sort data from .dat files
-    for (size_t i = 0; i < m_files.size(); i++)
+    std::thread th[12];
+    for (size_t thIx = 0; thIx < m_numThreads; thIx++)
+    {
+        th[thIx] = std::thread([this, thIx] { this->threadDataWorker(thIx); });
+    }
+
+    for (int thIx = 0; thIx < m_numThreads; thIx++) {
+            th[thIx].join();
+        }
+    #if debug
+    std::cout << "[fillData] Sorted " << m_data.size() << " files." << std::endl;
+    #endif
+}
+
+void ParseData::threadDataWorker(size_t threadIndex) 
+{
+    for (size_t i = threadIndex; i < m_files.size(); i+=m_numThreads)
     {
         // Create temporary surfdata object
         Surfdata temp(m_files[i], m_hasJet);
@@ -43,10 +60,7 @@ void ParseData::fillData()
         // Add data to 
         m_data.emplace(step, CoefficientData(temp.CD)); 
     }
-
-    #if debug
-    std::cout << "[fillData] Sorted " << m_data.size() << " files." << std::endl;
-    #endif
+    
 }
 
 void ParseData::fillJetData() 

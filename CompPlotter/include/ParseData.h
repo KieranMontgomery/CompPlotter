@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <fstream>
 #include <map>
+#include <thread>
 
 #include "Surfdata.h"
 
@@ -22,11 +23,12 @@ class ParseData{
         // Variables
 
         // Functions
-        ParseData(const std::string& dirPath, bool hasJet);
+        ParseData(const std::string& dirPath, bool hasJet, int numThreads = 1);
 
     private:
         // Variables
         bool m_hasJet;
+        int m_numThreads;
         std::string m_dirPath;
         std::string m_screenPath;
         std::vector<std::string> m_files;
@@ -35,6 +37,8 @@ class ParseData{
         // Functions
         void getFilesInDir();
         void fillData();
+        void threadDataWorker(size_t threadIndex); // worker for thread
+
         void fillJetData();
         void writeData();
 };
