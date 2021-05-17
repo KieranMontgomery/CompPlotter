@@ -29,6 +29,12 @@ double naive(const char *p) {
             ++n;
         }
         r += f / std::pow(10.0, n);
+
+        if (*p == 'E') {
+            ++p;
+            double power = naive(p);
+            r *= std::pow(10.0, power);
+            }
     }
     if (neg) {
         r = -r;
@@ -119,6 +125,7 @@ void Surfdata::CalculateCD()
         double ds = points[i].ds;
         double Cp = points[i].Cp;
 
+        // TODO read correct jet positions
         if (m_hasJet && yc < 0.02 && xc < 1.4){
             continue;
         }

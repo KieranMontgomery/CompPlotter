@@ -32,7 +32,7 @@ class ParseData{
         std::string m_dirPath;
         std::string m_screenPath;
         std::vector<std::string> m_files;
-        std::map<int, CoefficientData> m_data;
+        std::vector<std::map<int, CoefficientData>> m_data;
 
         // Functions
         void getFilesInDir();

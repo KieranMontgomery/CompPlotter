@@ -67,9 +67,21 @@ int main()
 
     std::string path;
 #ifdef __linux__
-    path = "/home/kieranunix/dirforces";
+
+    #if test
+        path = "/home/kieranunix/dirforces";
+    #else
+        path = "/mnt/c/Users/kmont/Documents/Data/4LevCT0To3Jet0p05/raw/dirforces";
+    #endif
+
 #else
-    path = "F:/Users/kmont/Documents/LongJet/testJet/dirforces";
+
+    #if test
+        path = "F:/Users/kmont/Documents/LongJet/testJet/dirforces";
+    #else
+        path = "C:/Users/kmont/Documents/Data/4LevCT0To3Jet0p05/raw/dirforces";
+    #endif
+
 #endif
 
     ParseData(path, true, 12);

@@ -45,6 +45,7 @@ void ParseData::fillData()
 
 void ParseData::threadDataWorker(size_t threadIndex) 
 {
+    std::map<int, CoefficientData> tempMap;
     for (size_t i = threadIndex; i < m_files.size(); i+=m_numThreads)
     {
         // Create temporary surfdata object
@@ -58,8 +59,9 @@ void ParseData::threadDataWorker(size_t threadIndex)
         int step = atoi(stepAsString.c_str());
 
         // Add data to 
-        m_data.emplace(step, CoefficientData(temp.CD)); 
+        tempMap.emplace(step, CoefficientData(temp.CD)); 
     }
+    m_data.push_back(tempMap);
     
 }
 
@@ -87,14 +89,14 @@ void ParseData::fillJetData()
             step = std::atoi(line.c_str());
            
             //m_data[step].CTExit = CT;
-        
-            auto search = m_data.find(step);
-            if (search != m_data.end()) {
-                // std::cout << "Step: " << step << " CT: " << CT << std::endl;
-                search->second.CTExit = CT;
-                // std::cout << "Found " << search->first << '\n';
-            }
-        
+
+            for (auto& data: m_data) {
+                auto search = data.find(step);
+                if (search != data.end()) {
+                    search->second.CTExit = CT;
+                    break;
+                }
+            }                  
         }
         else if (line.find("CT") != std::string::npos){
             size_t stepIndex = 0;
@@ -118,10 +120,13 @@ void ParseData::writeData()
     std::ofstream myfile;
     myfile.open ("test.txt");
 
-    for (const auto& [key, value] : m_data){
-        myfile << key << "\t" << value.CD;
-        if (m_hasJet) myfile << "\t" << value.CTExit << "\t" << value.CTThroat;
-        myfile << "\n";
+    // TODO sort data before writing. May be able to write data in order without sorting.
+    for (auto& data: m_data) {
+        for (const auto& [key, value] : data){
+            myfile << key << "\t" << value.CD;
+            if (m_hasJet) myfile << "\t" << value.CTExit << "\t" << value.CTThroat;
+            myfile << "\n";
+        }
     }
     myfile.close();
 }
