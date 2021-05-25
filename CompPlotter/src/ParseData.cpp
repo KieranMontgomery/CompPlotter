@@ -1,11 +1,22 @@
 #include "ParseData.h"
 
-ParseData::ParseData(const std::string& dirPath, bool hasJet, int numThreads)  : m_dirPath(dirPath), m_hasJet(hasJet), m_numThreads(numThreads)
+
+#include <iterator>
+ParseData::ParseData(const std::string& dirPath, const std::string& outputName, bool hasJet, int numThreads) : m_dirPath(dirPath), m_hasJet(hasJet), m_numThreads(numThreads), m_outputName(outputName)
 {
+    #if debug
+        std::cout << "dirPath = " << m_dirPath << std::endl;
+        std::cout << "outputName = " <<m_outputName << std::endl;
+        std::cout << "hasJet = " << m_hasJet << std::endl;
+        std::cout << "numOfThreads = " << m_numThreads << std::endl;
+    #endif
+
     getFilesInDir();
     fillData();
     if (m_hasJet) fillJetData();
     writeData();
+
+    std::cout << "Finished " << outputName << "." << std::endl;
 }
 
 void ParseData::getFilesInDir() 
@@ -46,7 +57,15 @@ void ParseData::fillData()
 void ParseData::threadDataWorker(size_t threadIndex) 
 {
     std::map<int, CoefficientData> tempMap;
-    for (size_t i = threadIndex; i < m_files.size(); i+=m_numThreads)
+    int filesChunkSize = m_files.size() / m_numThreads;
+    int start = threadIndex * filesChunkSize;
+    int end = threadIndex == m_numThreads - 1 ? m_files.size() : (threadIndex + 1) * filesChunkSize;
+
+#if debug
+    std::cout << "Thread " << threadIndex << " doing files from " << start << " to " << end << ".   " << std::endl;
+#endif
+
+    for (size_t i = start; i < end; i++)
     {
         // Create temporary surfdata object
         Surfdata temp(m_files[i], m_hasJet);
@@ -61,8 +80,7 @@ void ParseData::threadDataWorker(size_t threadIndex)
         // Add data to 
         tempMap.emplace(step, CoefficientData(temp.CD)); 
     }
-    m_data.push_back(tempMap);
-    
+    m_data.push_back(tempMap);    
 }
 
 void ParseData::fillJetData() 
@@ -79,6 +97,7 @@ void ParseData::fillJetData()
 
     std::string line;
     double CT;
+    double CT_Throat;
     int step;
     while(getline(file, line))
     {
@@ -94,15 +113,22 @@ void ParseData::fillJetData()
                 auto search = data.find(step);
                 if (search != data.end()) {
                     search->second.CTExit = CT;
+                    search->second.CTThroat = CT_Throat;
                     break;
                 }
             }                  
         }
-        else if (line.find("CT") != std::string::npos){
+        else if (line.find("CT ") != std::string::npos){
             size_t stepIndex = 0;
             for ( ; stepIndex < line.length(); stepIndex++ ){ if ( isdigit(line[stepIndex]) ) break; }
             line = line.substr(stepIndex, line.length() - stepIndex );
             CT = std::atof(line.c_str());
+        }
+        else if (line.find("CT_Throat") != std::string::npos){
+            size_t stepIndex = 0;
+            for ( ; stepIndex < line.length(); stepIndex++ ){ if ( isdigit(line[stepIndex]) ) break; }
+            line = line.substr(stepIndex, line.length() - stepIndex );
+            CT_Throat = std::atof(line.c_str());
         }
     }
 
@@ -118,15 +144,22 @@ void ParseData::writeData()
     std::cout << "Writing data to file" << std::endl;
     #endif
     std::ofstream myfile;
-    myfile.open ("test.txt");
+    myfile.open (m_outputName + ".txt");
 
-    // TODO sort data before writing. May be able to write data in order without sorting.
-    for (auto& data: m_data) {
-        for (const auto& [key, value] : data){
-            myfile << key << "\t" << value.CD;
-            if (m_hasJet) myfile << "\t" << value.CTExit << "\t" << value.CTThroat;
-            myfile << "\n";
-        }
+    // std::sort(m_data.begin(), m_data.end(), [](const std::map<int, CoefficientData>& a, const std::map<int, CoefficientData>& b){     
+    //     return a.begin()->first < b.begin()->first;
+    // });
+
+    std::map<int, CoefficientData> allData;
+
+    for (auto& data: m_data){
+        allData.merge(data);
+    }
+
+    for (const auto& [key, value] : allData){
+        myfile << key << "\t" << value.CD;
+        if (m_hasJet) myfile << "\t" << value.CTExit << "\t" << value.CTThroat;
+        myfile << "\n";
     }
     myfile.close();
 }

@@ -6,42 +6,6 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-// #define OLD_PATH
-
-double naive(const char *p) {
-    double r = 0.0;
-    bool neg = false;
-    if (*p == '-') {
-        neg = true;
-        ++p;
-    }
-    while (*p >= '0' && *p <= '9') {
-        r = (r*10.0) + (*p - '0');
-        ++p;
-    }
-    if (*p == '.') {
-        double f = 0.0;
-        int n = 0;
-        ++p;
-        while (*p >= '0' && *p <= '9') {
-            f = (f*10.0) + (*p - '0');
-            ++p;
-            ++n;
-        }
-        r += f / std::pow(10.0, n);
-
-        if (*p == 'E') {
-            ++p;
-            double power = naive(p);
-            r *= std::pow(10.0, power);
-            }
-    }
-    if (neg) {
-        r = -r;
-    }
-    return r;
-}
-
 std::vector<SurfacePoint> extractDataFromFile(const std::string& filename) 
 {
     #if debug==2 
@@ -60,15 +24,6 @@ std::vector<SurfacePoint> extractDataFromFile(const std::string& filename)
     while(getline(file, line))
     {
         v_len = 0;
-        #ifdef OLD_PATH
-        line = line.substr(line.find_first_not_of(" "));
-        size_t pos = 0;
-        while ((pos = line.find("  ")) != std::string::npos) {
-            v[v_len] = std::stod(line.substr(0, pos));
-            v_len++;
-            line.erase(0, pos + 2); // pos plus delimeter size
-        }
-        #else
         int ix = 0;
         // ignore whitespace
         while (ix < line.size() && line[ix] == ' ') { ix++; }
@@ -78,8 +33,7 @@ std::vector<SurfacePoint> extractDataFromFile(const std::string& filename)
                 // TODO: test this code lol
                 double result = 0;
                 if (v_len == 1 || v_len == 2 || v_len == 3 || v_len == 6 || v_len == 8) {
-                    result = naive(line.substr(stIx, ix-stIx).c_str());
-                    //result = std::stod(line.substr(stIx, ix-stIx));
+                    result = std::stod(line.substr(stIx, ix-stIx));
                 } // 1 2 3 6 8
                 v[v_len] = result;
                 v_len++;
@@ -93,13 +47,11 @@ std::vector<SurfacePoint> extractDataFromFile(const std::string& filename)
         }
         /* parse the last number if there's any left */
         if (stIx < line.size()) {
-            //v[v_len] = std::stod(line.substr(stIx, ix-stIx));
             if (v_len == 1 || v_len == 2 || v_len == 3 || v_len == 6 || v_len == 8) {
-                v[v_len] = naive(line.substr(stIx, ix-stIx).c_str());
+                v[v_len] = std::stod(line.substr(stIx, ix-stIx));
             }
             v_len++;
         }
-        #endif
         output.push_back(SurfacePoint(v));
     }
     file.close();

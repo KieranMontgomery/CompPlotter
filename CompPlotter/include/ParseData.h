@@ -7,6 +7,9 @@
 #include <map>
 #include <thread>
 
+
+#include <iterator>
+
 #include "Surfdata.h"
 
 struct CoefficientData{
@@ -16,14 +19,14 @@ struct CoefficientData{
 
     CoefficientData(){std::cout << "Copied\n"; }; // TODO Why do we need a default constructor? Can we remove? Does not compile without, probably to do with map.
     CoefficientData(double CD) : CD(CD) {};
-};
 
+};
 class ParseData{
     public:
         // Variables
 
         // Functions
-        ParseData(const std::string& dirPath, bool hasJet, int numThreads = 1);
+        ParseData(const std::string& dirPath, const std::string& outputName, bool hasJet, int numThreads = 1);
 
     private:
         // Variables
@@ -31,6 +34,7 @@ class ParseData{
         int m_numThreads;
         std::string m_dirPath;
         std::string m_screenPath;
+        std::string m_outputName;
         std::vector<std::string> m_files;
         std::vector<std::map<int, CoefficientData>> m_data;
 

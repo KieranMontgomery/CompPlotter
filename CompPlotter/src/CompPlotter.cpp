@@ -84,7 +84,6 @@ int main()
 
 #endif
 
-    ParseData(path, true, 12);
-
-    std::cout << "Finished" << std::endl;
+    ParseData("C:/Users/kmont/Documents/Data/noJet/dirforces", "noJet", false, 12);
+    ParseData(path, "Jet0p05", true, 12);
 }
