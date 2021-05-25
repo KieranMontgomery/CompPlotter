@@ -78,7 +78,7 @@ void Surfdata::CalculateCD()
         double Cp = points[i].Cp;
 
         // TODO read correct jet positions
-        if (m_hasJet && yc < 0.02 && xc < 1.4){
+        if (m_hasJet && yc < 0.04 && xc < 1.5){
             continue;
         }
 
