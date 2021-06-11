@@ -84,6 +84,13 @@ int main()
 
 #endif
 
-    ParseData("C:/Users/kmont/Documents/Data/noJet/dirforces", "noJet", false, 12);
-    ParseData(path, "Jet0p05", true, 12);
+    //ParseData("C:/Users/kmont/Documents/Data/noJet/dirforces", "noJet", false, 12);
+    //ParseData(path, "Jet0p05", true, 12);
+    //ParseData("C:/Users/kmont/Documents/Data/rampUpAndDown/dirforces", "JetRamp", true, 12);
+
+    ParseData("C:/Users/kmont/Documents/Data/CT0p1/dirforces", "CT0p1", true, 12);
+    ParseData("C:/Users/kmont/Documents/Data/CT0p3/dirforces", "CT0p3", true, 12);
+    ParseData("C:/Users/kmont/Documents/Data/CT0p5/dirforces", "CT0p5", true, 12);
+    ParseData("C:/Users/kmont/Documents/Data/CT1p5/dirforces", "CT1p5", true, 12);
+    ParseData("C:/Users/kmont/Documents/Data/CT2p5/dirforces", "CT2p5", true, 12);
 }
