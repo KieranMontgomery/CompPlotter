@@ -62,6 +62,8 @@ void showStats(const Stats& s) {
 } 
 
 // COMPILE SCRIPT - clang++ -std=c++17 -o a.exe -I include src/*.cpp -O3 -target x86_64-pc-windows-msvc 
+
+// g++-10 src/*.cpp -std=c++17 -o a.out -O3 -I include -pthread
 int main()
 {
 
@@ -71,7 +73,8 @@ int main()
     #if test
         path = "/home/kieranunix/dirforces";
     #else
-        path = "/mnt/c/Users/kmont/Documents/Data/4LevCT0To3Jet0p05/raw/dirforces";
+        //path = "/mnt/c/Users/kmont/Documents/Data/4LevCT0To3Jet0p05/raw/dirforces";
+        path = "/media/kam2317/6TB/Results/May2021/4LevCT0To3Jet0p15/raw/dirforces";
     #endif
 
 #else

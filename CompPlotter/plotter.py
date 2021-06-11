@@ -36,8 +36,8 @@ _, CD_0p5, _, _ = getData("CT0p5.txt")
 _, CD_1p5, _, _ = getData("CT1p5.txt")
 _, CD_2p5, _, _ = getData("CT2p5.txt")
 
-CDMean =  np.mean(CDnoJet)
-print("Average CD = ", CDMean)
+#CDMean =  np.mean(CDnoJet)
+#print("Average CD = ", CDMean)
 
 data = np.loadtxt("JetRamp.txt")
 for i in range(len(data)):
