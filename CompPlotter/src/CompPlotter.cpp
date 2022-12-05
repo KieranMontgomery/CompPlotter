@@ -2,14 +2,12 @@
 #include <cmath>
 #include <iostream>
 #include <vector>
-
 #include <chrono>
-
 #include <thread>
-
 #include <utility>
+#include <filesystem>
 
-#include "Surfdata.h"
+#include "ParseData.h"
 
 #define ITER_BENCH 5
 
@@ -63,65 +61,35 @@ void showStats(const Stats& s) {
     std::cout << "Minimum/Maximum: " << s.minMs << "ms" << " / " << s.maxMs << "ms" << std::endl;
 } 
 
+// COMPILE SCRIPT - clang++ -std=c++17 -o a.exe -I include src/*.cpp -O3 -target x86_64-pc-windows-msvc 
+
+// g++-10 src/*.cpp -std=c++17 -o a.out -O3 -I include -pthread
 int main()
 {
-    std::vector<std::string> test {
-"data/test0.dat",
-"data/test1.dat",
-"data/test2.dat",
-"data/test3.dat",
-"data/test4.dat",
-"data/test5.dat",
-"data/test6.dat",
-"data/test7.dat",
-"data/test8.dat",
-"data/test9.dat",
-"data/test10.dat",
-"data/test11.dat",
-"data/test12.dat",
-"data/test13.dat",
-"data/test14.dat",
-"data/test15.dat",
-"data/test16.dat",
-"data/test17.dat",
-"data/test18.dat",
-"data/test19.dat",
-"data/test20.dat",
-    };
 
-    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-    std::vector<std::chrono::nanoseconds> runs;
-    const auto& iter = [&test](int ix, std::chrono::nanoseconds& out) {
-        std::chrono::steady_clock::time_point beginRun = std::chrono::steady_clock::now();
-        Surfdata s(test[ix]); /* code */
-        std::chrono::steady_clock::time_point endRun = std::chrono::steady_clock::now();
-        out = endRun - beginRun;
-    };
+    std::string path;
+#ifdef __linux__
 
-    for (size_t i = 0; i < ITER_BENCH; i++)
-    {
-        std::thread th[12];
-        std::chrono::nanoseconds times[12];
-        for (int thIx = 0; thIx < 12; thIx++) {
-            th[thIx] = std::thread(iter, thIx, std::ref(times[thIx]));
-        }
-        for (int thIx = 0; thIx < 12; thIx++) {
-            th[thIx].join();
-            runs.push_back(times[thIx]);
-        }
-    }
-    
-    showStats(calculate(runs));
-    //std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-    // std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()/ITER_BENCH << "[µs]" << std::endl;
-/*
-    filepath = "D:/Users/kmont/Documents/LongJet/forces820000.dat";
-    begin = std::chrono::steady_clock::now();
-    for (size_t i = 0; i < ITER_BENCH; i++)
-    {
-        Surfdata s(filepath);
-    }
-    end = std::chrono::steady_clock::now();
-    std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()/ITER_BENCH << "[µs]" << std::endl; 
-*/
+    #if test
+        path = "/home/kieranunix/dirforces";
+    #else
+        //path = "/mnt/c/Users/kmont/Documents/Data/4LevCT0To3Jet0p05/raw/dirforces";
+        // path = "/media/kieran/6TB/Results/Nov2021/Pulse10Redo/raw/dirforces";
+    #endif
+
+#else
+
+    #if test
+        path = "F:/Users/kmont/Documents/LongJet/testJet/dirforces";
+    #else
+        path = "C:/Users/kmont/Documents/Data/PulseCampaign/Pulse0p3To0p5/raw/dirforces";
+    #endif
+
+#endif
+
+    ParseData("/media/kieran/6TB/LONG/forces", "LongTest", true, 12);
+
+    //auto x = Surfdata("/media/kieran/6TB/Results/Oct2021/ConstantCT1/raw/dirforces/forces150000.dat");
+
+    //std::cout << x.CD << std::endl;
 }
