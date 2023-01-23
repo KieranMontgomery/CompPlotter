@@ -8,42 +8,36 @@
 #include <thread>
 #include <string>
 
-
 #include <iterator>
 
 #include "Surfdata.h"
 
-struct CoefficientData{
+struct CoefficientData
+{
     double CD;
     double CTExit;
     double CTThroat;
 
-    CoefficientData(){std::cout << "Copied\n"; }; // TODO Why do we need a default constructor? Can we remove? Does not compile without, probably to do with map.
-    CoefficientData(double CD) : CD(CD) {};
-
+    CoefficientData() { std::cout << "Copied\n"; };
+    CoefficientData(double CD) : CD(CD){};
 };
-class ParseData{
-    public:
-        // Variables
+class ParseData
+{
+public:
+    ParseData(const std::string &dirPath, const std::string &outputName, bool hasJet, int numThreads = 1);
 
-        // Functions
-        ParseData(const std::string& dirPath, const std::string& outputName, bool hasJet, int numThreads = 1);
+private:
+    bool m_hasJet;
+    int m_numThreads;
+    std::string m_dirPath;
+    std::string m_screenPath;
+    std::string m_outputName;
+    std::vector<std::string> m_files;
+    std::vector<std::map<int, CoefficientData>> m_data;
 
-    private:
-        // Variables
-        bool m_hasJet;
-        int m_numThreads;
-        std::string m_dirPath;
-        std::string m_screenPath;
-        std::string m_outputName;
-        std::vector<std::string> m_files;
-        std::vector<std::map<int, CoefficientData>> m_data;
-
-        // Functions
-        void getFilesInDir();
-        void fillData();
-        void threadDataWorker(size_t threadIndex); // worker for thread
-
-        void fillJetData();
-        void writeData();
+    void getFilesInDir();
+    void fillData();
+    void threadDataWorker(size_t threadIndex);
+    void fillJetData();
+    void writeData();
 };
