@@ -106,16 +106,19 @@ void Surfdata::CalculateCD()
         double ds = points[i].ds;
         double Cp = points[i].Cp;
 
+        double p = points[i].p;
+
         // // TODO read correct jet positions
         // if (m_hasJet && yc < 0.014 && xc < 1.5)
         // {
         //     continue;
         // }
 
-        CD += Cp * nx * ds * yc * 2.0;
+        // CD += Cp * nx * ds * 2.0;
+        CD += nx * ds * (p - 284.1922) / (0.5 * 0.0066 * 472.8044 * 472.8044);
     }
 
-    CD /= (0.509537 * 0.509537 * 0.25);
+    CD /= (0.6 * 0.6 * 0.25 * 3.14159);
 
 #if debug
     std::cout << "CD = " << CD << std::endl;
