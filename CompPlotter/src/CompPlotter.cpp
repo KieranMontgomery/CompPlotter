@@ -5,5 +5,5 @@
 
 int main()
 {
-    ParseData("/mnt/g/Users/kmont/Desktop/Uni/workstation/test", "LongTest", false, 1);
+    ParseData("/home/kieran/CompPlotter/CompPlotter/data", "LongTest", false, 1);
 }

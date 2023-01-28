@@ -20,6 +20,7 @@
 #include <algorithm>
 #include <cctype>
 #include <locale>
+#include <cstring>
 
 // trim from start (in place)
 static inline void ltrim(std::string &s)
@@ -55,6 +56,7 @@ void split(std::string to_split, std::string delimiter, std::vector<double> &out
             output.push_back(std::stod(token));
         to_split.erase(0, pos + delimiter.length());
     }
+    output.push_back(std::stod(to_split));
 }
 
 std::vector<SurfacePoint> extractDataFromFile(const std::string &filename)
@@ -80,7 +82,16 @@ std::vector<SurfacePoint> extractDataFromFile(const std::string &filename)
         // Read data from line and return as vector of doubles
         std::vector<double> row;
         split(line, " ", row);
-        output.push_back(SurfacePoint(row));
+
+        // Copy data to SurfacePoint struct
+        if (sizeof(SurfacePoint) != row.size() * sizeof(double)){
+            throw std::runtime_error("Size of SurfacePoint struct does not match size of data row. ("
+                                     + std::to_string(sizeof(SurfacePoint) /  sizeof(double)) + " != "
+                                     + std::to_string(row.size()) + ")");
+        }
+        SurfacePoint point;
+        memcpy(&point, row.data(), sizeof(SurfacePoint));
+        output.push_back(point);
     }
 
     file.close();
