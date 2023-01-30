@@ -59,6 +59,7 @@ void ParseData::fillData()
 
     // Sort data from .dat files
     std::thread th[m_numThreads];
+    m_thread_progress.resize(m_numThreads);
     for (size_t thIx = 0; thIx < m_numThreads; thIx++)
     {
         th[thIx] = std::thread([this, thIx]
@@ -87,10 +88,24 @@ void ParseData::threadDataWorker(size_t threadIndex)
 
     for (size_t i = start; i < end; i++)
     {
-#if debug
         int jobs = end - start;
         double percentage = (double)(i - start) / (double)jobs * 100.0;
+#if debug
         std::cout << "Thread " << threadIndex << ": " << percentage << "% Index: " << i << std::endl;
+#else
+        m_thread_progress[threadIndex] = percentage;
+        if (threadIndex == 0)
+        {
+            int average_progress = 0;
+            for (int i = 0; i < m_numThreads; i++)
+            {
+                average_progress += m_thread_progress[i];
+            }
+            average_progress /= m_numThreads;
+            std::cout << "\r"
+                      << "Progress: " << average_progress << "%";
+            std::cout << "\r" << std::flush;
+        }
 #endif
 
         // Create temporary surfdata object

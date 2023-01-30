@@ -5,5 +5,5 @@
 
 int main()
 {
-    ParseData("/media/Uni/workstation/dirforces", "LongTest", false, 4);
+    ParseData("/media/Uni/workstation/dirforces", "LongTest", false, 30);
 }

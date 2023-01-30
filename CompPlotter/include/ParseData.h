@@ -34,6 +34,7 @@ private:
     std::string m_outputName;
     std::vector<std::string> m_files;
     std::vector<std::map<int, CoefficientData>> m_data;
+    std::vector<double> m_thread_progress;
 
     void getFilesInDir();
     void fillData();
