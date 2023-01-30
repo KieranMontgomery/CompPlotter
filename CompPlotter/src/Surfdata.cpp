@@ -84,10 +84,9 @@ std::vector<SurfacePoint> extractDataFromFile(const std::string &filename)
         split(line, " ", row);
 
         // Copy data to SurfacePoint struct
-        if (sizeof(SurfacePoint) != row.size() * sizeof(double)){
-            throw std::runtime_error("Size of SurfacePoint struct does not match size of data row. ("
-                                     + std::to_string(sizeof(SurfacePoint) /  sizeof(double)) + " != "
-                                     + std::to_string(row.size()) + ")");
+        if (sizeof(SurfacePoint) != row.size() * sizeof(double))
+        {
+            throw std::runtime_error("Size of SurfacePoint struct does not match size of data row. (" + std::to_string(sizeof(SurfacePoint) / sizeof(double)) + " != " + std::to_string(row.size()) + ")\nPerhaps you have forgotten a compile flag?");
         }
         SurfacePoint point;
         memcpy(&point, row.data(), sizeof(SurfacePoint));

@@ -5,5 +5,5 @@
 
 int main()
 {
-    ParseData("/home/kieran/CompPlotter/CompPlotter/data", "LongTest", false, 1);
+    ParseData("/media/Uni/workstation/dirforces", "LongTest", false, 4);
 }

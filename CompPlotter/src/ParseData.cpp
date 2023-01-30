@@ -31,9 +31,6 @@ void ParseData::getFilesInDir()
 #endif
     for (const auto &entry : std::filesystem::directory_iterator(m_dirPath))
     {
-#if debug
-        std::cout << "\t\tFile:\t" << entry.path().string() << std::endl;
-#endif
         std::string file = entry.path().string(); // Name of file as a string
         if (file.find(".dat") != std::string::npos)
             m_files.push_back(file); // If file is a data file, add it to vector
@@ -48,8 +45,10 @@ void ParseData::getFilesInDir()
         size_t posOfSlash = m_dirPath.find_last_of('/');
         m_screenPath = m_dirPath.substr(0, posOfSlash + 1) + "screen";
     }
-
-    std::cout << m_screenPath << std::endl;
+#if debug
+    std::cout << "Found " << m_files.size() << " files." << std::endl;
+    std::cout << "Found screen at " << m_screenPath << std::endl;
+#endif
 }
 
 void ParseData::fillData()
@@ -59,7 +58,7 @@ void ParseData::fillData()
 #endif
 
     // Sort data from .dat files
-    std::thread th[12];
+    std::thread th[m_numThreads];
     for (size_t thIx = 0; thIx < m_numThreads; thIx++)
     {
         th[thIx] = std::thread([this, thIx]
@@ -83,7 +82,7 @@ void ParseData::threadDataWorker(size_t threadIndex)
     int end = threadIndex == m_numThreads - 1 ? m_files.size() : (threadIndex + 1) * filesChunkSize;
 
 #if debug
-    std::cout << "Thread " << threadIndex << " doing files from " << start << " to " << end << ".   " << std::endl;
+    // std::cout << "Thread " << threadIndex << " doing files from " << start << " to " << end << ".   " << std::endl;
 #endif
 
     for (size_t i = start; i < end; i++)
@@ -93,6 +92,7 @@ void ParseData::threadDataWorker(size_t threadIndex)
         double percentage = (double)(i - start) / (double)jobs * 100.0;
         std::cout << "Thread " << threadIndex << ": " << percentage << "% Index: " << i << std::endl;
 #endif
+
         // Create temporary surfdata object
         Surfdata temp(m_files[i], m_hasJet);
 
